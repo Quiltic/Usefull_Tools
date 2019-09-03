@@ -1,0 +1,116 @@
+Table = open('ptable.txt','r')
+equ = str(input('Type in the equation: '))
+mass = input('Type in the mass: ')
+if mass == '':
+    mass = 0
+else:
+    mass = float(mass)
+
+def brakets(equ):
+    alfa = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    numba = '1234567890'
+    while ')' in equ:
+        cvbnm = ''
+        mark = [0,0]
+        for a in range(len(equ)):
+            if equ[a] == '(':
+                mark[0] = a+1
+            elif equ[a] == ')':
+                mark[1] = a
+                break
+
+        w = mark[1]
+        try:
+            c = 3
+            for b in range(int(equ[w+1:w+3])):
+                cvbnm = cvbnm +equ[mark[0]:w] 
+        except:
+            try:
+                c = 2
+                for a in range(int(equ[w+1:w+2])):
+                    cvbnm = cvbnm + equ[mark[0]:w]
+            except:
+                c = 1
+                for a in range(int(equ[w+1])):
+                    cvbnm = cvbnm + equ[mark[0]:w]
+                    
+        equ = equ.replace(equ[mark[0]-1:w+c],cvbnm)
+    return(equ)
+        
+def Solver(equ,mass):
+
+    alfa = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'#['A','A','A','A','A','A','A','A','A','A','A','A','A','A','A','A','A','A','A','A','A','A','A','A','A']
+    numba = '1234567890'
+    Seca = []
+    Cap = False
+    tg = 0
+    equ = (brakets(equ))
+
+    while len(equ) > 1:
+        if tg > 100:
+            break
+        tg += 1
+        for part in range(len(equ)):
+            #print(equ[part])
+            if equ[part] in alfa:
+                if not Cap:
+                    Cap = True
+                else:
+                    if equ[:part] == '':
+                        break
+                    Cap = False
+                    Seca.append((equ[:part]+' '))
+                    equ = equ[part:]
+                    break
+                
+
+    Seca.append((equ+' '))
+    Sec = []
+    for a in Seca:
+        times = '0'
+        c = ''
+        for b in a:
+            if b in numba:
+                times = times + b
+            else:
+                c = c+b
+        a = c
+        Sec.append(a)
+        for useless in range(int(times)-1):
+            Sec.append(a)
+
+    #print(Sec)
+    q = Table.readlines()
+    total = 0
+    for pt in Sec:
+        #print(pt)
+        for a in q:
+            if pt in a:
+                print(a)
+                a=a.replace('\n','')
+                tally = 0
+                for split in range(len(a)):
+                    if a[split] == ' ':
+                        tally += 1
+                    if tally == 3:
+                        total += float(a[split+1:])
+                        break
+
+    print('Total Expected Mass: %s' % (total))
+
+    total = mass/total
+
+    print('Total Moles: %s' % (total))
+#'''
+while equ != 'End':
+    Solver(equ,mass)
+    print()
+    equ = str(input('Type in the equation: '))
+    mass = input('Type in the mass: ')
+    if mass == '':
+        mass = 0
+    else:
+        mass = float(mass)
+    Table = open('ptable.txt','r')
+    
+Table.close()
